@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="calendar.css">
+  <script src="jquery-2.2.4.min.js"></script>
+<style>
+  .week-it {
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid sandybrown;
+    text-align: center;
+  }
+  .date-item {
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid beige;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="calendar-wrapper">
+    <div class="calendar-cont">
+      <!--左边日历-上-中-下-->
+      <div class="calendar-item left-calendar">
+        <div class="calendar-top">
+          <i class="icon l-icon mm-prev" data-year="" data-month=""> < </i>
+          <select name="l-year" id="l-calendar-year" class="select-sty">
+            <option value="2020">2020</option>
+          </select>
+          <i>年</i>
+          <select name="l-mon" id="l-calendar-mon" class="select-sty">
+            <option value="05">05</option>
+          </select>
+          <i>月</i>
+        </div>
+        <div class="calendar-mid">
+          <ul>
+            <li class="week-li"><span class="week-li-item">日</span><span class="week-li-item">Son</span></li>
+            <li class="week-li"><span class="week-li-item">一</span><span class="week-li-item">Mon</span></li>
+            <li class="week-li"><span class="week-li-item">二</span><span class="week-li-item">Tue</span></li>
+            <li class="week-li"><span class="week-li-item">三</span><span class="week-li-item">Wed</span></li>
+            <li class="week-li"><span class="week-li-item">四</span><span class="week-li-item">Thu</span></li>
+            <li class="week-li"><span class="week-li-item">五</span><span class="week-li-item">Fri</span></li>
+            <li class="week-li"><span class="week-li-item">六</span><span class="week-li-item">Sat</span></li>
+          </ul>
+        </div>
+        <div class="calendar-bottom">
+          <ul class="c-date-list l-data-list"></ul>
+        </div>
+      </div>
+      <!--右边日历-上-中-下-->
+      <div class="calendar-item right-calendar">
+        <div class="calendar-top">
+          <i class="icon r-icon mm-next" data-year="" data-month=""> > </i>
+          <select name="r-year" id="r-calendar-year" class="select-sty">
+            <option value="2020">2020</option>
+          </select>
+          <i>年</i>
+          <select name="r-mon" id="r-calendar-mon" class="select-sty">
+            <option value="05">05</option>
+          </select>
+          <i>月</i>
+        </div>
+        <div class="calendar-mid">
+          <ul>
+            <li class="week-li"><span class="week-li-item">日</span><span class="week-li-item">Son</span></li>
+            <li class="week-li"><span class="week-li-item">一</span><span class="week-li-item">Mon</span></li>
+            <li class="week-li"><span class="week-li-item">二</span><span class="week-li-item">Tue</span></li>
+            <li class="week-li"><span class="week-li-item">三</span><span class="week-li-item">Wed</span></li>
+            <li class="week-li"><span class="week-li-item">四</span><span class="week-li-item">Thu</span></li>
+            <li class="week-li"><span class="week-li-item">五</span><span class="week-li-item">Fri</span></li>
+            <li class="week-li"><span class="week-li-item">六</span><span class="week-li-item">Sat</span></li>
+          </ul>
+        </div>
+        <div class="calendar-bottom">
+          <ul class="c-date-list r-data-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  //时间数据
+  var timeArr = [
+    {count:6,time:'2020-05-01'},
+    {count:22,time:'2020-05-02'},
+    {count:13,time:'2020-05-03'},
+    {count:56,time:'2020-05-04'},
+    {count:6,time:'2020-05-05'},
+    {count:33,time:'2020-05-06'},
+    {count:8,time:'2020-05-07'},
+    {count:123,time:'2020-05-09'},
+    {count:24,time:'2020-05-11'},
+    {count:2,time:'2020-05-12'}
+  ]
+</script>
+<script>
+  /**
+   * 第一次初始化 显示 当前年月双日历
+   * 根据年 变化日历
+   * 根据月 变化日历
+   * 根据上一个月下一个月箭头 变化日历
+   * 根据传值 变化日历
+   * */
+  function initDate(year,month){
+    console.log(year,month)
+    //month 1-12
+    var nowdate = new Date();
+    //当前 *年*月
+    var nowyear = nowdate.getFullYear();
+    var nowmonth =  nowdate.getMonth()+1;
+
+    var mm = nowdate.getMonth() + 1;
+    mm < 10 ? mm = "0" + mm : mm = mm;
+    var dd = nowdate.getDate();
+    dd < 10 ? dd = "0" + dd : dd = dd;
+    //今天
+    var today = nowyear + "-" + mm + "-" + dd;
+
+    //没有传值，默认获取当前年月，进行配置日历 右边日历为当前
+    //右侧 *年*月 左侧 *年*月
+    var rightyear = year || nowyear;
+    var rightMonth = month || nowmonth;
+    if(month){
+      if(month >= nowmonth && rightyear==nowyear){
+        rightMonth = nowmonth;
+        $('.mm-next').hide();
+      }else{
+        rightMonth = month;
+        $('.mm-next').show();
+      }
+    }else{
+      rightMonth = nowmonth;
+      $('.mm-next').hide();
+    }
+
+    var leftyear  = 0;
+    var leftmonth = 0;
+
+    if(rightMonth==1){
+      leftyear = rightyear - 1;
+      leftmonth = 12;
+    }else{
+      leftyear = rightyear;
+      leftmonth = rightMonth -1;
+    }
+    //日历顶部配置年月dom
+    var result = nowyear-2017+1;
+    var yearcount = nowyear;
+    $('#l-calendar-year').empty();
+    $('#r-calendar-year').empty();
+
+    $('#r-calendar-mon').empty();
+    $('#l-calendar-mon').empty();
+    for(var i=0;i<result;i++){
+      var $op = $('<option value="'+yearcount+'">'+yearcount+'</option>');
+      $('#r-calendar-year').append($op.clone());
+      $('#l-calendar-year').append($op.clone());
+      yearcount--;
+    }
+
+    //判断年份 设置option可选择的年月
+    if(rightyear < nowyear){
+      var monthcount = 12;
+      var count = 1;
+      for(var i=0;i<monthcount;i++){
+        if(count <= monthcount){
+          var $op = $('<option value="'+count+'">'+count+'</option>');
+          $('#r-calendar-mon').append($op.clone());
+          $('#l-calendar-mon').append($op.clone());
+          count++;
+        }
+      }
+    }
+    else if(rightyear == nowyear && leftyear==nowyear){
+      var monthcount = nowmonth;
+      var count = 1;
+      for(var i=0;i<monthcount;i++){
+        if(count <= monthcount){
+          var $op = $('<option value="'+count+'">'+count+'</option>');
+          $('#r-calendar-mon').append($op.clone());
+          $('#l-calendar-mon').append($op.clone());
+          count++;
+        }
+      }
+    }
+    else if(rightyear == nowyear && leftyear < nowyear){
+      var monthcount = nowmonth;
+      var count = 1;
+      for(var i=0;i<monthcount;i++){
+        if(count <= monthcount){
+          var $op = $('<option value="'+count+'">'+count+'</option>');
+          $('#r-calendar-mon').append($op.clone());
+          count++;
+        }
+      }
+      var monthcount2 = 12;
+      var count2 = 1;
+      for(var i=0;i<monthcount2;i++){
+        if(count2 <= monthcount2){
+          var $op = $('<option value="'+count2+'">'+count2+'</option>');
+          $('#l-calendar-mon').append($op.clone());
+          count2++;
+        }
+      }
+    }
+    //日历顶部配置年月
+    $('#r-calendar-year').val(rightyear);
+    $('#r-calendar-mon').val(rightMonth);
+    $('#l-calendar-year').val(leftyear);
+    $('#l-calendar-mon').val(leftmonth);
+
+    //日历 箭头 年月属性设置
+    $('.mm-prev').attr('data-year',leftyear);
+    $('.mm-prev').attr('data-month',leftmonth);
+    $('.mm-next').attr('data-year',rightyear);
+    $('.mm-next').attr('data-month',rightMonth);
+    //配置日期
+    _setCalendar(rightyear, rightMonth, $('.r-data-list'));
+    _setCalendar(leftyear, leftmonth, $('.l-data-list'));
+    //配置俩月数据
+    //操作日子
+    $('.c-date').each(function () {
+      //点击日期
+      $(this).on("click",function (e) {
+        var oEv = e || window.event;
+        if (window.event) {
+          oEv.cancelBubble=true;
+        } else {
+          oEv.preventDefault();
+        }
+        oEv.stopPropagation();
+        if(typeof ($(this).attr("data-date"))== "undefined"){
+          return false;
+        }else{
+          //当前点击日期
+          var clickDate = $(this).attr("data-date");
+          //点击一个日期 判断 是否有开始 无 当前点击为开始，有 当前点击判断是否大于开始
+          var $start =$(".can-start").length;
+          var $end = $('.can-end').length;
+          if($start == 1 && $end != 1){
+            var startdata = Number($('.can-start').eq(0).attr('data-number'));
+            var thisdata = Number($(this).attr('data-number'));
+            if(startdata > thisdata){
+              console.log('>')
+              $('.can-start').removeClass('date-select');
+              $(this).siblings().removeClass('can-start')
+              $(this).addClass("date-select can-start");
+            }else{
+              console.log('<=')
+              $(this).addClass("date-select can-end");
+            }
+          }else if($start == 1 && $end == 1){
+            // 点击大于结束 为开始  点击大于开始小于结束 为开始 点击 小于开始为开始
+            $('.can-start').removeClass('date-select');
+            $('.can-end').removeClass('date-select');
+            $(this).siblings().removeClass('can-start can-end')
+            $(this).addClass("date-select can-start");
+          }
+          else{
+            $(this).addClass("date-select can-start");
+          }
+        }
+      });
+      //移入移出日期
+      $(this).on("mouseenter", function () {
+        if($(this).attr('data-date')){
+          $(this).css({"borderColor":"red"});
+        }
+      }).on("mouseleave", function () {
+        if($(this).attr('data-date')){
+          $(this).css({"borderColor":"#ddd"});
+        }
+      });
+      //设置今天 及 之后日期的样式
+      if ($(this).attr("data-date") == today) {
+        $(this).find('.c-date-day').text("今天");
+      }
+      else if ($(this).attr("data-date") > today) {
+        $(this).removeAttr('data-date')
+                .removeClass('date-enter')
+                .addClass('forbidli')
+                .find('.c-date-day').addClass('forbid');
+      }
+    });
+  }
+  initDate();
+  //配置日子
+  function _setCalendar(y, m, obj) {
+    obj.empty();
+    var date_list = obj;
+    //传参年月
+    var year = Number(y);
+    var month = Number(m);
+    //当前 月份
+    var mmonth = month < 10 ?  "0" + month : month = month;
+    //上个 月份
+    var pmonth = month - 1;
+    pmonth < 10 ? pmonth = "0" + pmonth : pmonth = pmonth;
+
+    //当前月 天数
+    var allday = _getMonthCount(year,month-1);
+    //当前月 星期几
+    var fd_week = _getWeekDay(year,month-1);
+    //上个月 总天数
+    var pallday =_getMonthCount(year,month-2);
+
+    //下个月差的天数
+    var nnd_week = 42 - fd_week - allday;
+
+    for (var i = 0; i < fd_week; i++) {
+      var li = $('<li class="c-date previous" ddata-date=' + year + '-' + pmonth + '-' + (pallday - fd_week + i + 1) + '>' +
+              '<span class="c-date-con c-date-day">' + (pallday - fd_week + i + 1) + '</span>\n' +
+              '<span class="c-date-con c-date-num"></span>\n' +
+              '</li>');
+      date_list.append(li);
+    }
+    //当前月天数
+    for (var i = 0; i < allday; i++) {
+      var kk = i + 1;
+      kk < 10 ? kk = "0" + kk : kk = kk;
+      var li = $('<li class="c-date date-enter" data-date=' + year + '-' + mmonth + '-' + kk + ' data-number=' + year + mmonth + kk + '>\n' +
+              '<span class="c-date-con c-date-day">' + (i + 1) + '</span>\n' +
+              '<span class="c-date-con c-date-num"></span>\n' +
+              '</li>');
+      date_list.append(li);
+    }
+    for (var i = 0; i < nnd_week; i++) {
+      var li = $('<li class="c-date forbidli">' +
+              '<span class="c-date-con c-date-day"></span>\n' +
+              '<div class="c-date-con c-date-num"></div>\n' +
+              '</li>');
+      date_list.append(li);
+    }
+    for (var i = 0; i < timeArr.length; i++) {
+      obj.find('.c-date').each(function () {
+        if($(this).attr("data-date")){
+          if ($(this).attr("data-date") == timeArr[i].time){
+            $(this).find(".c-date-num").text(timeArr[i].count+'个');
+          }else{
+
+          }
+        }
+      })
+    }
+
+  }
+
+  //点击上一个月
+  $('.mm-prev').on('click',function () {
+    var year = $(this).attr('data-year');
+    var month = $(this).attr('data-month');
+    if(year != 2017){
+      initDate(Number(year),Number(month));
+    }else{
+      if(month==1){
+        initDate(Number(year),Number(month)+1);
+        $(this).hide();
+      }else{
+        initDate(Number(year),Number(month));
+      }
+    }
+
+  });
+  //点击下一个月
+  $('.mm-next').on('click',function () {
+    var year = $(this).attr('data-year');
+    var month = $(this).attr('data-month');
+    if(month == 12){
+      initDate(Number(year)+1, 1);
+    }else{
+      initDate(Number(year),Number(month)+1);
+    }
+    if(year!=2017 && month!=2){
+      $('.mm-prev').show();
+    }
+  });
+  //选择年份
+  $('#l-calendar-year').on('change',function () {
+    var year = $(this).val();
+    var month = $('#l-calendar-mon').val();
+    if(month==12){
+      initDate(Number(year)+1,1);
+    }else{
+      initDate(Number(year),Number(month)+1);
+    }
+
+  });
+  $('#r-calendar-year').on('change',function () {
+    var year = $(this).val();
+    var month = $('#r-calendar-mon').val();
+    initDate(Number(year),Number(month));
+  });
+  //选择月份
+  $('#l-calendar-mon').on('change',function () {
+    var month = $(this).val();
+    var year = $('#l-calendar-year').val();
+    if(month==12){
+      initDate(Number(year)+1,1);
+    }else{
+      initDate(Number(year),Number(month)+1);
+    }
+  });
+  $('#r-calendar-mon').on('change',function () {
+    var month = $(this).val();
+    var year = $('#r-calendar-year').val();
+    initDate(Number(year),Number(month));
+  });
+
+  //是否为闰年
+  function isLeapYear(year) {
+    return (year % 400 === 0) || (year % 100 !== 0 && year % 4 === 0);
+  }
+  //获取每个月有多少天 month=[0-11]
+  function _getMonthCount(year,month) {
+    var arr = [31, null, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var count = arr[month] || (isLeapYear(year) ? 29 : 28);
+    return Number(count);
+  }
+  //获得某年某月的 1号 是星期几，这里要注意的是 JS 的 API-getDay() 是从 [日-六](0-6)，返回 number
+  function _getWeekDay(year,month) {
+    var date = new Date(year, month, 1);
+    var day = date.getDay();
+    if(day==0){
+      day = 7;
+    }
+    return day;
+  }
+
+</script>
+
+</html>

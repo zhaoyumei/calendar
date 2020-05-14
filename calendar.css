@@ -1,0 +1,138 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-style:normal
+}
+/*日历*/
+.calendar-wrapper{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 10;
+}
+.calendar-cont{
+    overflow: hidden;
+}
+.calendar-item{
+    overflow: hidden;
+    float: left;
+    width: 322px;
+    background-color: #2874c6;
+    padding: 8px 0 0 0;
+}
+
+.calendar-item .calendar-top{
+    position: relative;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+}
+.calendar-item .calendar-top .select-sty{
+    min-width: 40px;
+}
+.calendar-item .calendar-top i{
+    color: #FFFFFF;
+    font-size: 14px;
+}
+.calendar-item .calendar-top .icon{
+    color: #fff;
+    font-size: 22px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+.calendar-item .calendar-top .l-icon{
+    position: absolute;
+    left: 16px;
+    top: 0;
+}
+.calendar-item .calendar-top .r-icon{
+    position: absolute;
+    right: 16px;
+    top: 0;
+}
+.calendar-item .calendar-mid ul{
+    font-size: 0;
+}
+.calendar-item .calendar-mid .week-li{
+    overflow: hidden;
+    display: inline-block;
+    font-size: 0;
+}
+.calendar-item .calendar-mid .week-li .week-li-item{
+    display:block;
+    width: 46px;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+/*日历日期部分*/
+.calendar-item .calendar-bottom{
+    background-color: #FFFFFF;
+    /*height: 240px;*/
+}
+
+.calendar-item .c-date-list{
+    overflow: hidden;
+    font-size: 0;
+}
+.calendar-item .c-date{
+    overflow: hidden;
+    float: left;
+    position: relative;
+    width: 46px;
+    height: 42px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    color: #404040;
+    font-size:12px;
+}
+.calendar-item .c-date-con{
+    display: inline-block;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+}
+.calendar-item .c-date-day{
+    padding-left: 4px;
+    text-align: left;
+}
+.calendar-item .c-date-num{
+    color: #ff0000;
+    text-align: center;
+}
+.calendar-item .date-unselect{
+    background-color: #bfbfbf;
+}
+.calendar-item .date-enter:hover{
+    background-color: #fefee6;
+    color: #0c1dd6;
+}
+.calendar-item .date-select{
+    border: 1px solid red;
+    color: #FFFFFF;
+}
+.calendar-item .previous{
+    color: #afafaf;
+    background-color: #fcfcfc;
+}
+.calendar-item .forbidli{
+    color: #afafaf;
+    background-color: #fcfcfc;
+}
+.calendar-item .forbid{
+    text-decoration: line-through;
+}
+.calendar-item .can-start{
+    background-color: #ffb42e;
+}
+.calendar-item .can-end{
+    background-color: #ff8f0c;
+}
+/*右边单独*/
+.right-calendar{
+    margin-left: 2px;
+}
